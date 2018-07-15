@@ -88,6 +88,9 @@ df <- urls_shp_to_df(links, axis = 2)
 
 ggplot(df, aes(x = x, y = elevation)) + geom_line()
 
-ggplot(df, aes(x = x, y = elevation)) +
+p <- ggplot(df, aes(x = x, y = elevation)) +
   geom_smooth(se = FALSE) +
   theme_void()
+
+# Save plot as an svg
+ggsave(filename = "elevation.svg", plot = p)
