@@ -9,10 +9,9 @@ project <- function(spdf, axis) {
   # Convert a SpatialGridDataFrame to a dataframe
   # by projecting the points onto an axis
   
-  center <- spdf@grid@cellcentre.offset[[axis]]
-  dim <- spdf@grid@cells.dim[[axis]]
-  size <- spdf@grid@cellsize[[axis]]
-  # There are `dim` cells of size `size`
+  center <- spdf@grid@cellcentre.offset[[axis]] # cell center wrt bottom left 
+  dim <- spdf@grid@cells.dim[[axis]] # number of cells on an axis
+  size <- spdf@grid@cellsize[[axis]] # size of a cell
   
   # Calculate start and end indices (lat or long, depending on `axis`)
   start <- center - (size/2)
@@ -62,6 +61,7 @@ urls_shp_to_df <- function(urls, axis) {
   
   # For every url (corresponding to a grid cell),
   # find its maximum over the axis 
+  # Use llply because of its progress bar
   y <- plyr::llply(urls, url_shp_to_df, 
                    axis = axis,
                    .progress = 'text')
@@ -86,7 +86,8 @@ links <- str_extract_all(feed, "http[:/.\\w]+\\.zip")[[1]] %>% unique
 # Get elevation levels 
 df <- urls_shp_to_df(links, axis = 2)
 
-# Take max over cells in one `row`
+ggplot(df, aes(x = x, y = elevation)) + geom_line()
+
 ggplot(df, aes(x = x, y = elevation)) +
   geom_smooth(se = FALSE) +
   theme_void()
